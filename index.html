@@ -3,55 +3,25 @@
   <head>
     <base target="_top">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <style>
-      body {
-        background-color:#EAF2F8 ;
-      }
-      .close{
-        text-align:center;
-      }
-      h1{
-        color:blue;
-        font-family: cursive;
-      }
-      
-    </style>
   </head>
   <body>
-    <h1>UI</h1>
-    <input type = "button" value = "Close" onclick = "google.script.host.close()"/>
+<p>Hello Words</p>
+<h1 id="result";></h1>
+<h1>Replacement:</h1>
+<h1>Problem:</h1> 
 
-    <div id="rangeResult"></div>
-
-
-    <script>
-      // Takes in string parameter which is then broken up sentence by sentence and appended as a new div element to the document
-      function addRange(rangeStartEnd){ 
-         var string1 = rangeStartEnd.substring(0, rangeStartEnd.indexOf(".") );
-
-        var i = 0;
-        while(rangeStartEnd.length > 3){
-          var temporary = rangeStartEnd.substring(0, rangeStartEnd.indexOf(".") );
-          rangeStartEnd = rangeStartEnd.substring(rangeStartEnd.indexOf(".")+1); //cuts off the previous sentence from the whole
-          console.log(temporary + "------");
-          var line = document.createElement("div");
-          line.innerHTML = temporary;
-          document.body.appendChild(line);
-          console.log(rangeStartEnd.length + ", i is"+ i);
-          //$('#rangeResult').text("   pause   "+thePreviousIndex + "   pause    ");
-          
-        }
+ 
 
 
-
-
-
-        
-      
+ <script>
+       function addRange(rangeStartEnd){ 
+        $('#result').text(rangeStartEnd);
       };
-
       
-      google.script.run.withSuccessHandler(addRange).doTheThing();
-    </script>
+      google.script.run.withSuccessHandler(addRange).onEdit();
+      
+      
+      
+ </script>
   </body>
 </html>

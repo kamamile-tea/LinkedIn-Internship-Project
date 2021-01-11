@@ -1,109 +1,99 @@
-const wordExchange = {
-  nonInclusiveWords:  //will return index of found word and will use that index to access the correspooding set of alternatives
-    ['blacklist','whitelist','master','slave','multi master','single master','master branch',
-    'redliner','hangman','ghetto','grandfathering'],
-  
-  alternativeWords: {
-    0: {
-      0:'denylist',
-      1:'rejectlist',
-      2: 'blocklist',
-      3: 'excludelist'
-      },
+//CUSTOM MENU
 
-    1: {
-      0:'allowlist',
-      1:'acceptlist',
-      2: 'passlist',
-      3: 'includelist'
-      },
-    2: {
-      0:'primary',
-      1:'default',
-      2: 'leader',
-      3: 'active'
-      },
-    3: {
-      0:'secondary',
-      1:'replica',
-      2: 'follower',
-      3: 'standby'
-      },
-    4: {
-      0:'active active'
-      },
-    5: {
-      0:'single active'
-      },
-    6: {
-      0:'main'
-      },
-    7: {
-      0:'dyno'
-      },
-    8: {
-      0:'remove this interview question'
-      },
-    9: {
-      0:'low-quality',
-      1: 'subpar'
-      },
-    10: {
-      0:'legacy',
-      1: 'exception'
-      },
-
-  },
-
-  reasons:
-    ['Color reference','Color reference','The master-slave relationship was the cornerstone of the laws of slavery.','The master-slave relationship was the cornerstone of the laws of slavery.','Reference to Slavery','Reference to Slavery','Reference to Slavery','State and federal housing policies that mandated segregation','Legacy of racially-motivated violence','Residential segregation based on race','Statutes enacted in the South to suppress African American voting'],
-
-}
 function onOpen() {
+  // Get the Ui object.
   var ui = SpreadsheetApp.getUi();
-  ui.createMenu('My Add-Ons')
-    .addItem('Check for exclusive words', 'createSidebar')
+
+  // Create and add a named menu and its items to the menu bar.
+  ui.createMenu('Improve the Text')
+    .addItem('Find Inclusive Words', 'onEdit')
     .addToUi();
 }
 
+//Create Sidebar
 function createSidebar(){
-
-  //Creat Sidebar
-  var html = HtmlService.createHtmlOutputFromFile('index');
-  SpreadsheetApp.getUi().showSidebar(html);
-
-
+  var ui = SpreadsheetApp.getUi();
+  var tmp = HtmlService.createTemplateFromFile('index');
+  var html = tmp.evaluate();
+  html.setTitle('Sidebar');
+  ui.showSidebar(html);
 }
+// Creating list of words:
+const blacklist = createWord('blacklist', 'Denylist', 'color reference');
+const whitelist = createWord('whitelist', 'Allowlist', 'color reference');
+const master = createWord('master','Primary', 'color reference');     // created word object linke 18 definition
+const slave = createWord('slave','Secondary', 'color reference');     // created word object linke 18 definition
+const multiMaster = createWord('multiMaster','Active', 'color reference');     // created word object linke 18 definition
+const singleMaster = createWord('singleMaster','Single', 'color reference');     // created word object linke 18 definition
+const masterBrand = createWord('masterBrand','Main', 'color reference');     // created word object linke 18 definition
+const redliner = createWord('redliner','Dyno', 'color reference');     // created word object linke 18 definition
+const hangman = createWord('hangman','Remove This Interview Question', 'color reference');     // created word object linke 18 definition
+const ghetto = createWord('ghetto','Subpar', 'color reference');     // created word object linke 18 definition
+const grandfathering = createWord('grandfathering','Legacy', 'color reference');     // created word object linke 18 definition
 
-function doTheThing(){
-  var sheet = SpreadsheetApp.getActiveSheet();
-  var sheetRange = sheet.getDataRange();
-  var sheetValues = sheetRange.getValues();
+const words = [blacklist, whitelist,master, slave, multiMaster, singleMaster, masterBrand, redliner, hangman, ghetto, grandfathering];
 
-  var matches = "";
 
-  for(let row = 0; row < sheetValues.length; row++){
-    for(let col = 0; col < sheetValues[row].length; col++){
-      for(let nonWord = 0; nonWord < wordExchange.nonInclusiveWords.length; nonWord++){
+//Identify if cell has inclusive words
+//FUNCTRION THAT WORKS BELOW
+//             function findWords() {
+// //           var spreadSheet = ``SpreadsheetApp.getActiveSpreadsheet();
+////             var sheet = spreadSheet.getActiveSheet();
+// //            var activeCell = sheet.getActiveCell().getValue();
+//  var activeCell = input;
+//                var problemWords = words.filter(words => words.term == activeCell); // if one of the objects in "words" is equal to what is in cell, then assign to problemWords
+//
+//              if (problemWords.length !=0){
+//               var problemTerm = problemWords[0].term;
+//               var reason = problemWords[0].reason;
+//                 var replacement = problemWords[0].replacement;
+//    
+//    var reason = document.getElementById("reason").innerHTML = problemWords[0].reason;
+ //document.getElementById("replacement").innerHTML = "Testing";
+    
+    //.             return replacement;
+//    var Reason = problemWords[0].reason
+//    var Replacement = problemWords[0].replacement
+//    console.log(problemTerm, reason, replacement);
+//     }else{
+//     console.log("It's empty");
+   //}  
+//                      }
 
-        if(sheetValues[row][col].toLowerCase() == wordExchange.nonInclusiveWords[nonWord]){
-          matches += (sheetValues[row][col] 
-          + ' is a problematic word' 
-          + ' some alternatives are ');
 
-          for(x in wordExchange.alternativeWords[nonWord]){
-            matches +=(wordExchange.alternativeWords[nonWord][x] + ' ');
-          }
 
-          matches += (' and the reason is '+ wordExchange.reasons[nonWord] + '. \n');
-        }
+function onEdit(e){
+ // var spreadSheet = SpreadsheetApp.getActiveSpreadsheet();
+  //var activeSheet = e.source.getActiveSheet();
+  //var cell = e.value(); //grabs the cell (same as getActiveCell)
+  var range = e.range;
+  var value = range.getValue();
+  var user = e.user.getEmail();
+  var valueLowerCase = value.toLowerCase();
+  //return cell;
+  var problemWords = words.filter(words => words.term == valueLowerCase); // if one of the objects in "words" is equal to what is in cell, then assign to problemWords
 
-      }
-    }
+  if (problemWords.length !=0){
+    var problemTerm = problemWords[0].term;
+    var reason = problemWords[0].reason;
+    var replacement = problemWords[0].replacement; 
+    
+    range.setNote('Hey! You have used a term  "' + problemTerm + '". Use "' + replacement + '" instead to prevent ' + reason);
+    //return [problemTerm, replacement, reason];
+  }else{
+    range.clearNote();
   }
+}
 
-  return matches;
 
+// Create object from values
+function createWord(problemTerm, wordReplacement, wordReason) {
+  const createdWord = {
+    term : problemTerm,
+    replacement : wordReplacement,
+    reason : wordReason
+  }
+  return createdWord
 }
 
 
@@ -111,3 +101,32 @@ function doTheThing(){
 
 
 
+
+/*
+function findWords() {
+  var spreadSheet = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = spreadSheet.getActiveSheet();
+  var activeCell = sheet.getCurrentCell().getValue();
+  console.log(activeCell);
+
+}
+
+
+function findWords() {
+  var spreadSheet = SpreadsheetApp.getActiveSpreadsheet(); //
+  var sheet = spreadSheet.getSheetByName("Sheet1");
+  var activeCell = sheet.getActiveCell().getValue(); //Gets the active cell
+  //console.log(activeCell);
+  var problemWords = words.filter(word => blacklist == activeCell); //
+  console.log(problemWords);
+  //if (problemWords.length !=0)
+}
+  // Drew Example:
+   var activeCell = sheet.getActiveCell.getValue(); //Gets the active cell
+  // var problemWords = wordsAsArray.filter(arrayObject => arrayObject.term == activeCell);  // => var problemWords = [whitelistObject] 
+  // if (problemWords.length !=0) ... you have an array of size one with a word object in it (you could change the filter so it's not necessarily size 1)
+  // replacementReason = problemWords[0].reason
+ // replacement = problemWords[0].replacement
+
+
+*/
