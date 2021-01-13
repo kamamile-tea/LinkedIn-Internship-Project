@@ -1,68 +1,7 @@
-const wordExchange = {
-  nonInclusiveWords:  //will return index of found word and will use that index to access the correspooding set of alternatives
-    ['blacklist','whitelist','master','slave','multi master','single master','master branch',
-    'redliner','hangman','ghetto','grandfathering'],
-  
-  alternativeWords: {
-    0: {
-      0:'denylist',
-      1:'rejectlist',
-      2: 'blocklist',
-      3: 'excludelist'
-      },
-
-    1: {
-      0:'allowlist',
-      1:'acceptlist',
-      2: 'passlist',
-      3: 'includelist'
-      },
-    2: {
-      0:'primary',
-      1:'default',
-      2: 'leader',
-      3: 'active'
-      },
-    3: {
-      0:'secondary',
-      1:'replica',
-      2: 'follower',
-      3: 'standby'
-      },
-    4: {
-      0:'active active'
-      },
-    5: {
-      0:'single active'
-      },
-    6: {
-      0:'main'
-      },
-    7: {
-      0:'dyno'
-      },
-    8: {
-      0:'remove this interview question'
-      },
-    9: {
-      0:'low-quality',
-      1: 'subpar'
-      },
-    10: {
-      0:'legacy',
-      1: 'exception'
-      },
-
-  },
-
-  reasons:
-    ['Color reference','Color reference','The master-slave relationship was the cornerstone of the laws of slavery.','The master-slave relationship was the cornerstone of the laws of slavery.','Reference to Slavery','Reference to Slavery','Reference to Slavery','State and federal housing policies that mandated segregation','Legacy of racially-motivated violence','Residential segregation based on race','Statutes enacted in the South to suppress African American voting'],
-
-}
 function onOpen() {
-  var ui = SpreadsheetApp.getUi();
-  ui.createMenu('My Add-Ons')
-    .addItem('Check for exclusive words', 'createSidebar')
+  var ui = SlidesApp.getUi();
+  ui.createMenu('Search for Inclusive Words')
+    .addItem('Start', 'grabAllText')
     .addToUi();
 }
 
@@ -70,44 +9,102 @@ function createSidebar(){
 
   //Creat Sidebar
   var html = HtmlService.createHtmlOutputFromFile('index');
-  SpreadsheetApp.getUi().showSidebar(html);
+  SlidesApp.getUi().showSidebar(html);
 
 
 }
 
-function doTheThing(){
-  var sheet = SpreadsheetApp.getActiveSheet();
-  var sheetRange = sheet.getDataRange();
-  var sheetValues = sheetRange.getValues();
+const blacklist = createWord('blacklist', 'Denylist', 'color reference');
+const blacklists = createWord('blacklists', 'Denylists', 'color reference');
 
-  var matches = "";
+const whitelist = createWord('whitelist', 'Allowlist', 'color reference');
+const whitelists = createWord('whitelists', 'Allowlists', 'color reference');
 
-  for(let row = 0; row < sheetValues.length; row++){
-    for(let col = 0; col < sheetValues[row].length; col++){
-      for(let nonWord = 0; nonWord < wordExchange.nonInclusiveWords.length; nonWord++){
+const master = createWord('master','Primary', 'color reference');
+const masters = createWord('masters','Primaries', 'color reference');
 
-        if(sheetValues[row][col].toLowerCase() == wordExchange.nonInclusiveWords[nonWord]){
-          matches += (sheetValues[row][col] 
-          + ' is a problematic word' 
-          + ' some alternatives are ');
+const slave = createWord('slave','Secondary', 'color reference');
+const slaves = createWord('slaves','Secondaries', 'color reference');
 
-          for(x in wordExchange.alternativeWords[nonWord]){
-            matches +=(wordExchange.alternativeWords[nonWord][x] + ' ');
-          }
+const multiMaster = createWord('multiMaster','Active', 'color reference');
+const multiMasters = createWord('multiMasters','Actives', 'color reference');
 
-          matches += (' and the reason is '+ wordExchange.reasons[nonWord] + '. \n');
-        }
+const singleMaster = createWord('singleMaster','Single', 'color reference');
+const singleMasters = createWord('singleMasters','Singles', 'color reference');
 
-      }
-    }
+const masterBrand = createWord('masterBrand','Main', 'color reference');
+const masterBrands = createWord('masterBrands','Mains', 'color reference');
+
+const redliner = createWord('redliner','Dyno', 'color reference');
+const redliners = createWord('redliners','Dynos', 'color reference');
+
+const hangman = createWord('hangman','Remove This Interview Question', 'color reference');
+const hangmans = createWord('hangmans','Remove This Interview Question', 'color reference');
+
+const ghetto = createWord('ghetto','Subpar', 'color reference');
+const ghettos = createWord('ghettos','Subpars', 'color reference');
+
+const grandfathering = createWord('grandfathering','Legacy', 'color reference');
+const grandfatherings = createWord('grandfatherings','Legacies', 'color reference');
+
+const words = [blacklist, blacklists, whitelist, whitelists, master, masters, slave, slaves, multiMaster, multiMasters, singleMaster, singleMasters, masterBrand, masterBrands, redliner, redliners, hangman, hangmans, ghetto, ghettos, grandfathering, grandfatherings];
+
+function createWord(problemTerm, wordReplacement, wordReason) {
+  const createdWord = {
+    term : problemTerm,
+    replacement : wordReplacement,
+    reason : wordReason
   }
-
-  return matches;
-
+  return createdWord
 }
 
 
+function grabAllText(){
+  var presentation = SlidesApp.getActivePresentation();
+  var slides = presentation.getSlides();
+  slides.forEach(function(slide){
+    shapes = slide.getShapes();
+    shapes.forEach(function(shape){
+      var rangeA = shape.getText();
+      var value = rangeA.asString();
+      var valueLowerCase = value.toLowerCase();
+      var problemWords = words.filter(words => words.term == valueLowerCase); 
+
+      if (problemWords.length !=0){
+      var problemTerm = problemWords[0].term;
+      var reason = problemWords[0].reason;
+      var replacement = problemWords[0].replacement;
+      Logger.log(reason);
+      }
+    })
+  })
+}
 
 
-
-
+function replaceAllowed(){
+  var currentPage = SlidesApp.getActivePresentation().getSelection().getCurrentPage();
+  var presentation = SlidesApp.getActivePresentation();
+  var slides = presentation.getSlides();
+  presentation.replaceAllText("whitelist", "Allowlist", false);
+  presentation.replaceAllText("whitelists", "Allowlists", false);
+  presentation.replaceAllText("blacklist", "Denylist", false);
+  presentation.replaceAllText("blacklists", "Denylists", false);
+  presentation.replaceAllText("master", "Primary", false);
+  presentation.replaceAllText("masters", "Primaries", false);
+  presentation.replaceAllText("slave", "Follower", false);
+  presentation.replaceAllText("slaves", "Followers", false);
+  presentation.replaceAllText("multiMaster", "Active", false);
+  presentation.replaceAllText("multiMasters", "Actives", false);
+  presentation.replaceAllText("singleMaster", "Single", false);
+  presentation.replaceAllText("singleMasters", "Singles", false);
+  presentation.replaceAllText("masterBrand", "Main", false);
+  presentation.replaceAllText("masterBrands", "Mains", false);
+  presentation.replaceAllText("redliner", "Dyno", false);
+  presentation.replaceAllText("redliners", "Dynos", false);
+  presentation.replaceAllText("hangman", "Hangman (Recommended to remove This Interview Question)", false);
+  presentation.replaceAllText("hangmans", "Hangmans (Recommended to remove This Interview Question)", false);
+  presentation.replaceAllText("ghetto", "Low-quality", false);
+  presentation.replaceAllText("ghettos", "Low-quality", false);
+  presentation.replaceAllText("grandfathering", "Legacy", false);
+  presentation.replaceAllText("grandfatherings", "Legacies", false);
+}
