@@ -1,7 +1,27 @@
 {
   "timeZone": "America/New_York",
-  "dependencies": {
-  },
+  "dependencies": {},
   "exceptionLogging": "STACKDRIVER",
-  "runtimeVersion": "V8"
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/documents.currentonly",
+    "https://www.googleapis.com/auth/spreadsheets.currentonly",
+    "https://www.googleapis.com/auth/presentations.currentonly"
+  ],
+  "runtimeVersion": "V8",
+  "addOns": {
+    "common": {
+      "name": "UnInclusive Language",
+      "logoUrl": "https://www.nicepng.com/png/detail/800-8002293_aesthetic-clipart-pastel-sticker-tumblr-pink-png.png",
+      "layoutProperties": {
+        "primaryColor": "#2772ed"
+      },
+      "homepageTrigger": {
+        "runFunction": "onHomepage"
+      }
+    },
+    "docs" : {},
+    "slides" : {},
+    "sheets" : {},
+    "drive" : {}
+  }
 }
