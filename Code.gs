@@ -1,64 +1,18 @@
-const wordExchange = {
-  nonInclusiveWords:  //will return index of found word and will use that index to access the correspooding set of alternatives
-    ['blacklist','whitelist','master','slave','multi master','single master','master branch',
-    'redliner','hangman','ghetto','grandfathering'],
-  
-  alternativeWords: {
-    0: {
-      0:'denylist',
-      1:'rejectlist',
-      2: 'blocklist',
-      3: 'excludelist'
-      },
+// Creating list of words:
+const blacklist = createWord('blacklist', 'Denylist', 'color reference');
+const whitelist = createWord('whitelist', 'Allowlist', 'color reference');
+const master = createWord('master','Primary', 'color reference');     // created word object linke 18 definition
+const slave = createWord('slave','Secondary', 'color reference');     // created word object linke 18 definition
+const multiMaster = createWord('multiMaster','Active', 'color reference');     // created word object linke 18 definition
+const singleMaster = createWord('singleMaster','Single', 'color reference');     // created word object linke 18 definition
+const masterBrand = createWord('masterBrand','Main', 'color reference');     // created word object linke 18 definition
+const redliner = createWord('redliner','Dyno', 'color reference');     // created word object linke 18 definition
+const hangman = createWord('hangman','Remove This Interview Question', 'color reference');     // created word object linke 18 definition
+const ghetto = createWord('ghetto','Subpar', 'color reference');     // created word object linke 18 definition
+const grandfathering = createWord('grandfathering','Legacy', 'color reference');     // created word object linke 18 definition
 
-    1: {
-      0:'allowlist',
-      1:'acceptlist',
-      2: 'passlist',
-      3: 'includelist'
-      },
-    2: {
-      0:'primary',
-      1:'default',
-      2: 'leader',
-      3: 'active'
-      },
-    3: {
-      0:'secondary',
-      1:'replica',
-      2: 'follower',
-      3: 'standby'
-      },
-    4: {
-      0:'active active'
-      },
-    5: {
-      0:'single active'
-      },
-    6: {
-      0:'main'
-      },
-    7: {
-      0:'dyno'
-      },
-    8: {
-      0:'remove this interview question'
-      },
-    9: {
-      0:'low-quality',
-      1: 'subpar'
-      },
-    10: {
-      0:'legacy',
-      1: 'exception'
-      },
+const words = [blacklist, whitelist,master, slave, multiMaster, singleMaster, masterBrand, redliner, hangman, ghetto, grandfathering];
 
-  },
-
-  reasons:
-    ['Color reference','Color reference','The master-slave relationship was the cornerstone of the laws of slavery.','The master-slave relationship was the cornerstone of the laws of slavery.','Reference to Slavery','Reference to Slavery','Reference to Slavery','State and federal housing policies that mandated segregation','Legacy of racially-motivated violence','Residential segregation based on race','Statutes enacted in the South to suppress African American voting'],
-
-}
 
 /**
  * Callback for rendering the main card.
@@ -66,6 +20,23 @@ const wordExchange = {
  */
 function onHomepage(e) {
   return createSelectionCard(e);
+}
+
+function whenEdit(e){
+  var range = e.range;
+  var value = range.getValue();
+  var valueLowerCase = value.toLowerCase();
+  var problemWords = words.filter(words => words.term == valueLowerCase);
+
+  if (problemWords.length !=0){
+    var problemTerm = problemWords[0].term;
+    var reason = problemWords[0].reason;
+    var replacement = problemWords[0].replacement; 
+    
+    range.setNote('Hey! You have used a term  "' + problemTerm + '". Use "' + replacement + '" instead to prevent ' + reason);
+  }else{
+    range.clearNote();
+  }
 }
 
 /**
@@ -78,21 +49,20 @@ function createSelectionCard(e) {
 
   // "From" language selection & text input section
   var fromSection = CardService.newCardSection()
-  //   .addWidget(generateLanguagesDropdown('origin', 'From: ', originLanguage))
-  //   .addWidget(CardService.newTextInput()
-  //     .setFieldName('input')
-  //     .setValue(inputText)
-  //     .setTitle('Enter text...')
-  //     .setMultiline(true));
 
-  // if (hostApp === 'docs') {
-  //   fromSection.addWidget(CardService.newButtonSet()
-  //     .addButton(CardService.newTextButton()
-  //       .setText('Get Selection')
-  //       .setOnClickAction(CardService.newAction().setFunctionName('getDocsSelection'))
-  //       .setDisabled(false)))
-  // } 
-   if (hostApp === 'sheets') {
+  if (hostApp === 'docs') {
+    fromSection.addWidget(CardService.newButtonSet()
+      .addButton(CardService.newTextButton()
+        .setText('Get Selection')
+        .setOnClickAction(CardService.newAction().setFunctionName('getDocsSelection'))
+        .setDisabled(false)))
+  } 
+   else if (hostApp === 'sheets') {
+    ScriptApp.newTrigger('whenEdit')
+    .forSpreadsheet(SpreadsheetApp.getActive())
+    .onEdit()
+    .create();
+
     fromSection.addWidget(CardService.newButtonSet()
       .addButton(CardService.newTextButton()
         .setText('Get Selection')
@@ -110,59 +80,44 @@ function createSelectionCard(e) {
 
   builder.addSection(fromSection);
 
-  // // "Translation" language selection & text input section
-  // builder.addSection(CardService.newCardSection()
-  //   .addWidget(generateLanguagesDropdown('destination', 'To: ', destinationLanguage))
-  //   .addWidget(CardService.newTextInput()
-  //     .setFieldName('output')
-  //     .setValue(outputText)
-  //     .setTitle('Translation...')
-  //     .setMultiline(true)));
-
-  // //Buttons section
-  // builder.addSection(CardService.newCardSection()
-  //   .addWidget(CardService.newButtonSet()
-  //     .addButton(CardService.newTextButton()
-  //       .setText('Translate')
-  //       .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
-  //       .setOnClickAction(CardService.newAction().setFunctionName('translateText'))
-  //       .setDisabled(false))
-  //     .addButton(CardService.newTextButton()
-  //       .setText('Clear')
-  //       .setOnClickAction(CardService.newAction().setFunctionName('clearText'))
-  //       .setDisabled(false))));
-
   return builder.build();
 
 }
 
-
+//ISSUE: DOESNT RECOGNIZE DIFFERENT CAPITLIZATION
 /**
  * Helper function to get the text selected.
  * @return {CardService.Card} The selected text.
  */
 function getDocsSelection(e) {
-  var text = '';
-  var selection = DocumentApp.getActiveDocument().getSelection();
-  Logger.log(selection)
-  if (selection) {
-    var elements = selection.getRangeElements();
-    for (var i = 0; i < elements.length; i++) {
-      Logger.log(elements[i]);
-      var element = elements[i];
-      // Only modify elements that can be edited as text; skip images and other non-text elements.
-      if (element.getElement().asText() && element.getElement().asText().getText() !== '') {
-        text += element.getElement().asText().getText() + '\n';
+  var body = DocumentApp.getActiveDocument().getBody();
+  //while(foundElement != null) {
+  for(x in words){
+      var foundElement = body.findText(words[x].term);
+      console.log(foundElement)
+      if(foundElement != null){
+      // Get the text object from the element
+      var foundText = foundElement.getElement().asText();
+      // Where in the element is the found text?
+      var start = foundElement.getStartOffset();
+      var end = foundElement.getEndOffsetInclusive();
+      // Set Bold
+      foundText.setBold(true);
       }
-    }
   }
 
-  if (text !== '') {
-    var originLanguage = e.formInput.origin;
-    var destinationLanguage = e.formInput.destination;
-    var translation = LanguageApp.translate(text, e.formInput.origin, e.formInput.destination);
-    return createSelectionCard(e, originLanguage, destinationLanguage, text, translation);
-  }
+   return CardService
+     .newCardBuilder()
+     .addSection(
+          CardService.newCardSection()
+              .addWidget(CardService.newTextParagraph().setText(
+                  'These are non-inclusive words'))
+                .addWidget(CardService.newButtonSet()
+      .addButton(CardService.newTextButton()
+        .setText('Replace Words')
+        .setOnClickAction(CardService.newAction().setFunctionName('replacement'))
+        .setDisabled(false))))
+              .build();
 }
 
 /**
@@ -178,18 +133,14 @@ function getSheetsSelection(e) {
 
   for(let row = 0; row < sheetValues.length; row++){
     for(let col = 0; col < sheetValues[row].length; col++){
-      for(let nonWord = 0; nonWord < wordExchange.nonInclusiveWords.length; nonWord++){
-
-        if(sheetValues[row][col].toLowerCase() == wordExchange.nonInclusiveWords[nonWord]){
+      for(x in words){
+        console.log(words[x].term + "-----");
+        if(sheetValues[row][col].toLowerCase().indexOf(words[x].term) != -1){
           matches += (sheetValues[row][col] 
           + ' is a problematic word' 
-          + ' some alternatives are ');
+          + ' some alternatives are ' + words[x].replacement);
 
-          for(x in wordExchange.alternativeWords[nonWord]){
-            matches +=(wordExchange.alternativeWords[nonWord][x] + ' ');
-          }
-
-          matches += (' and the reason is '+ wordExchange.reasons[nonWord] + '. \n');
+          matches += (' and the reason is '+ words[x].reason + '. \n');
         }
 
       }
@@ -203,12 +154,8 @@ function getSheetsSelection(e) {
      .addSection(
           CardService.newCardSection()
               .addWidget(CardService.newTextParagraph().setText(
-                  matches))
-              .addWidget(CardService.newImage().setImageUrl(
-                  'https://www.example.com/images/mapsImage.png')))
-     .addCardAction(CardService.newCardAction().setText('Gmail').setOpenLink(
-         CardService.newOpenLink().setUrl('https://mail.google.com/mail')))
-     .build();
+                  matches)))
+              .build();
 }
 
 /**
@@ -231,4 +178,35 @@ function getSlidesSelection(e) {
     var translation = LanguageApp.translate(text, e.formInput.origin, e.formInput.destination);
     return createSelectionCard(e, originLanguage, destinationLanguage, text, translation);
   }
+}
+
+//Helper Functions::
+
+
+// Create object from values
+function createWord(problemTerm, wordReplacement, wordReason) {
+  const createdWord = {
+    term : problemTerm,
+    replacement : wordReplacement,
+    reason : wordReason
+  }
+  return createdWord
+}
+
+//ISSUE: BOLDENS THE WHOLE SELECTION OF WHERE THE PROBLEMATIC WORD IS FOUND UNTIL THERE IS A NEWLINE BREAK FOUND
+function replacement(){
+  const doc = DocumentApp.getActiveDocument();
+  const body = doc.setText(doc.getText().toLowerCase());
+  //Logger.log(body.findText("Blacklist[^a-zA-Z]").getElement().asText().getText())
+  body.replaceText("blacklist", "denylist");
+  body.replaceText("whitelist", "allowlist");
+  body.replaceText("master", "primary");
+  body.replaceText("slave", "secondary");
+  body.replaceText("ghetto", "low-quality");
+  body.replaceText("multi master", "active");
+  body.replaceText("master branch", "main");
+  body.replaceText("redliner", "dyno");
+  body.replaceText("hangman", "remove this interview question");
+  body.replaceText("grandfathering", "legacy");
+  //body.setBold(false);
 }
