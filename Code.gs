@@ -84,14 +84,15 @@ function createSelectionCard(e) {
 
 }
 
-//ISSUE: DOESNT RECOGNIZE DIFFERENT CAPITLIZATION
+//ISSUE: ONLY BOLDENS ONE INSTANCE OF THE PROBLEMATIC WORD, DOESNT WORK ON ANY AFTER THE FIRST INSTANCE OF SAID GIVEN WORD
 /**
- * Helper function to get the text selected.
+ * Finds problematic words and boldens them & creates a button to replace those words.
  * @return {CardService.Card} The selected text.
  */
 function getDocsSelection(e) {
-  var body = DocumentApp.getActiveDocument().getBody();
-  //while(foundElement != null) {
+  var doc = DocumentApp.getActiveDocument().getBody();
+  const body = doc.setText(doc.getText().toLowerCase());
+  
   for(x in words){
       var foundElement = body.findText(words[x].term);
       console.log(foundElement)
@@ -102,8 +103,8 @@ function getDocsSelection(e) {
       var start = foundElement.getStartOffset();
       var end = foundElement.getEndOffsetInclusive();
       // Set Bold
-      foundText.setBold(true);
-      }
+      foundText.setBold(start, end,true);
+    }
   }
 
    return CardService
@@ -112,12 +113,12 @@ function getDocsSelection(e) {
           CardService.newCardSection()
               .addWidget(CardService.newTextParagraph().setText(
                   'These are non-inclusive words'))
-                .addWidget(CardService.newButtonSet()
-      .addButton(CardService.newTextButton()
-        .setText('Replace Words')
-        .setOnClickAction(CardService.newAction().setFunctionName('replacement'))
-        .setDisabled(false))))
-              .build();
+              .addWidget(CardService.newButtonSet()
+                .addButton(CardService.newTextButton()
+                  .setText('Replace Words')
+                  .setOnClickAction(CardService.newAction().setFunctionName('replacement'))
+                  .setDisabled(false))))
+      .build();
 }
 
 /**
@@ -193,9 +194,9 @@ function createWord(problemTerm, wordReplacement, wordReason) {
   return createdWord
 }
 
-//ISSUE: BOLDENS THE WHOLE SELECTION OF WHERE THE PROBLEMATIC WORD IS FOUND UNTIL THERE IS A NEWLINE BREAK FOUND
 function replacement(){
-  const doc = DocumentApp.getActiveDocument();
+  const doc = DocumentApp.getActiveDocument().getBody();
+
   const body = doc.setText(doc.getText().toLowerCase());
   //Logger.log(body.findText("Blacklist[^a-zA-Z]").getElement().asText().getText())
   body.replaceText("blacklist", "denylist");
@@ -208,5 +209,5 @@ function replacement(){
   body.replaceText("redliner", "dyno");
   body.replaceText("hangman", "remove this interview question");
   body.replaceText("grandfathering", "legacy");
-  //body.setBold(false);
+  //  body.setBold(false);
 }
