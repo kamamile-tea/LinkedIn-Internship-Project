@@ -84,7 +84,7 @@ function createSelectionCard(e) {
 
 }
 
-//ISSUE: ONLY BOLDENS ONE INSTANCE OF THE PROBLEMATIC WORD, DOESNT WORK ON ANY AFTER THE FIRST INSTANCE OF SAID GIVEN WORD
+
 /**
  * Finds problematic words and boldens them & creates a button to replace those words.
  * @return {CardService.Card} The selected text.
@@ -95,16 +95,18 @@ function getDocsSelection(e) {
   
   for(x in words){
       var foundElement = body.findText(words[x].term);
-      console.log(foundElement)
-      if(foundElement != null){
-      // Get the text object from the element
-      var foundText = foundElement.getElement().asText();
-      // Where in the element is the found text?
-      var start = foundElement.getStartOffset();
-      var end = foundElement.getEndOffsetInclusive();
-      // Set Bold
-      foundText.setBold(start, end,true);
-    }
+      
+      while(foundElement != null){
+        // Get the text object from the element
+        var foundText = foundElement.getElement().asText();
+        // Where in the element is the found text?
+        var start = foundElement.getStartOffset();
+        var end = foundElement.getEndOffsetInclusive();
+        // Set Bold
+        foundText.setBold(start, end,true);
+        //Find the next match
+        foundElement = body.findText(words[x].term, foundElement);
+      }
   }
 
    return CardService
@@ -198,7 +200,7 @@ function replacement(){
   const doc = DocumentApp.getActiveDocument().getBody();
 
   const body = doc.setText(doc.getText().toLowerCase());
-  //Logger.log(body.findText("Blacklist[^a-zA-Z]").getElement().asText().getText())
+  
   body.replaceText("blacklist", "denylist");
   body.replaceText("whitelist", "allowlist");
   body.replaceText("master", "primary");
@@ -209,5 +211,4 @@ function replacement(){
   body.replaceText("redliner", "dyno");
   body.replaceText("hangman", "remove this interview question");
   body.replaceText("grandfathering", "legacy");
-  //  body.setBold(false);
 }
