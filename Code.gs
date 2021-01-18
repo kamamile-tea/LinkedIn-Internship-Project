@@ -40,9 +40,9 @@ function checkWords(){
         var whitelistMatches = valueLowerCase.match(/whitelist/g);
         var masterMatches = valueLowerCase.match(/master/g);
         var slaveMatches = valueLowerCase.match(/slave/g);
-        var multiMasterMatches = valueLowerCase.match(/multimaster/g);
-        var singleMasterMatches = valueLowerCase.match(/singlemaster/g);
-        var masterBrandMatches = valueLowerCase.match(/masterBrand/g);
+        var multiMasterMatches = valueLowerCase.match(/multi master/g);
+        var singleMasterMatches = valueLowerCase.match(/single master/g);
+        var masterBranchMatches = valueLowerCase.match(/master branch/g);
         var redlinerMatches = valueLowerCase.match(/redliner/g);
         var hangmanMatches = valueLowerCase.match(/hangman/g);
         var ghettoMatches = valueLowerCase.match(/ghetto/g);
@@ -64,13 +64,6 @@ function checkWords(){
             presentation.replaceAllText("whitelist", "acceptlist", false);
           }
         }
-        if(masterMatches != null){
-          var response = ui.alert('Problematic Word Found','Click YES to replace "master" with "primary"', 
-          ui.ButtonSet.  YES_NO);
-          if (response == ui.Button.YES){
-          presentation.replaceAllText("master", "primary", false);
-          }
-        }
         if(slaveMatches != null){
           var response = ui.alert('Problematic Word Found','Click YES to replace "slave" with "follower"', 
           ui.ButtonSet.YES_NO);
@@ -82,21 +75,28 @@ function checkWords(){
           var response = ui.alert('Problematic Word Found','Click YES to replace "multi master" with "active"', 
           ui.ButtonSet.YES_NO);
           if (response == ui.Button.YES){
-            presentation.replaceAllText("multimaster", "active", false);
+            presentation.replaceAllText("multi master", "active", false);
           }
         }
         if(singleMasterMatches != null){
           var response = ui.alert('Problematic Word Found','Click YES to replace "single master" with "active"', 
           ui.ButtonSet.YES_NO);
           if (response == ui.Button.YES){
-            presentation.replaceAllText("singlemaster", "active", false);
+            presentation.replaceAllText("single master", "active", false);
             }
         }
-        if(masterBrandMatches != null){
+        if(masterBranchMatches != null){
           var response = ui.alert('Problematic Word Found','Click YES to replace "master branch" with "main"', 
           ui.ButtonSet.YES_NO);
           if (response == ui.Button.YES){
             presentation.replaceAllText("master branch", "main", false);
+          }
+        }
+        if(masterMatches != null){
+          var response = ui.alert('Problematic Word Found','Click YES to replace "master" with "primary"', 
+          ui.ButtonSet.  YES_NO);
+          if (response == ui.Button.YES){
+          presentation.replaceAllText("master", "primary", false);
           }
         }
         if(redlinerMatches != null){
@@ -110,7 +110,7 @@ function checkWords(){
           var response = ui.alert('Problematic Word Found','Click YES to delete "hangman"', ui.ButtonSet.YES_NO);
           if (response == ui.Button.YES){
           //delete function
-          presentation.replaceAllText("hangman", "the use of 'hangman' is not recommended", false);
+          presentation.replaceAllText("hangman", "snowman", false);
           }
         }
         if(ghettoMatches != null){
