@@ -109,6 +109,8 @@ function getDocsSelection(e) {
         //Find the next match
         foundElement = body.findText(words[x].term, foundElement);
 
+        console.log("jjjjjj"+words[x]);
+
         matches = ('Problematic word: ' 
           + words[x].term
           + '\nAlternative: ' + words[x].replacement
@@ -125,7 +127,8 @@ function getDocsSelection(e) {
                   .setDisabled(false))
                 .addButton(CardService.newTextButton()
                   .setText('Replace Word')
-                  .setOnClickAction(CardService.newAction().setFunctionName('replacement'))
+                  .setOnClickAction(CardService.newAction().setFunctionName('replacement')
+                  .setParameters(words[x]))
                   .setDisabled(false)))
               .setCollapsible(true)
               .setHeader(words[x].term));
@@ -315,19 +318,11 @@ function createWord(problemTerm, wordReplacement, wordReason) {
   return createdWord
 }
 
-function replacement(){
+//add parameters to replace hardcode with problematic word and alternative word so only have to use 
+function replacement(words){
   const doc = DocumentApp.getActiveDocument().getBody();
+  Logger.log(words.term);
 
   const body = doc.setText(doc.getText().toLowerCase());
-  
   body.replaceText("blacklist", "denylist");
-  body.replaceText("whitelist", "allowlist");
-  body.replaceText("master", "primary");
-  body.replaceText("slave", "secondary");
-  body.replaceText("ghetto", "low-quality");
-  body.replaceText("multi master", "active");
-  body.replaceText("master branch", "main");
-  body.replaceText("redliner", "dyno");
-  body.replaceText("hangman", "remove this interview question");
-  body.replaceText("grandfathering", "legacy");
 }
