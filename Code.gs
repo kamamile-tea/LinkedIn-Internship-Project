@@ -1,15 +1,15 @@
 // Creating list of words:
-const blacklist = createWord('blacklist', 'Denylist', 'color reference');
-const whitelist = createWord('whitelist', 'Allowlist', 'color reference');
-const master = createWord('master','Primary', 'color reference');     // created word object linke 18 definition
-const slave = createWord('slave','Secondary', 'color reference');     // created word object linke 18 definition
-const multiMaster = createWord('multiMaster','Active', 'color reference');     // created word object linke 18 definition
-const singleMaster = createWord('singleMaster','Single', 'color reference');     // created word object linke 18 definition
-const masterBrand = createWord('masterBrand','Main', 'color reference');     // created word object linke 18 definition
-const redliner = createWord('redliner','Dyno', 'color reference');     // created word object linke 18 definition
-const hangman = createWord('hangman','Remove This Interview Question', 'color reference');     // created word object linke 18 definition
-const ghetto = createWord('ghetto','Subpar', 'color reference');     // created word object linke 18 definition
-const grandfathering = createWord('grandfathering','Legacy', 'color reference');     // created word object linke 18 definition
+const blacklist = createWord('blacklist', 'denylist', 'color reference');
+const whitelist = createWord('whitelist', 'allowlist', 'color reference');
+const master = createWord('master','primary', 'color reference');     // created word object linke 18 definition
+const slave = createWord('slave','secondary', 'color reference');     // created word object linke 18 definition
+const multiMaster = createWord('multiMaster','active', 'color reference');     // created word object linke 18 definition
+const singleMaster = createWord('singleMaster','single', 'color reference');     // created word object linke 18 definition
+const masterBrand = createWord('masterBrand','main', 'color reference');     // created word object linke 18 definition
+const redliner = createWord('redliner','dyno', 'color reference');     // created word object linke 18 definition
+const hangman = createWord('hangman','remove This Interview Question', 'color reference');     // created word object linke 18 definition
+const ghetto = createWord('ghetto','subpar', 'color reference');     // created word object linke 18 definition
+const grandfathering = createWord('grandfathering','legacy', 'color reference');     // created word object linke 18 definition
 
 const words = [blacklist, whitelist,master, slave, multiMaster, singleMaster, masterBrand, redliner, hangman, ghetto, grandfathering];
 
@@ -99,13 +99,6 @@ function getDocsSelection(e) {
       var foundElement = body.findText(words[x].term);
       
       while(foundElement != null){
-        // Get the text object from the element
-        var foundText = foundElement.getElement().asText();
-        // Where in the element is the found text?
-        var start = foundElement.getStartOffset();
-        var end = foundElement.getEndOffsetInclusive();
-        // Set Bold
-        foundText.setBold(start, end,true);
         //Find the next match
         foundElement = body.findText(words[x].term, foundElement);
 
@@ -123,12 +116,13 @@ function getDocsSelection(e) {
               .addWidget(CardService.newButtonSet()
                 .addButton(CardService.newTextButton()
                   .setText('Show me where')
-                  .setOnClickAction(CardService.newAction().setFunctionName('functionNameHere'))
+                  .setOnClickAction(CardService.newAction().setFunctionName('highlight')
+                  .setParameters({alternate: words[x].replacement, term:words[x].term }))
                   .setDisabled(false))
                 .addButton(CardService.newTextButton()
                   .setText('Replace Word')
                   .setOnClickAction(CardService.newAction().setFunctionName('replacement')
-                  .setParameters(words[x]))
+                  .setParameters({alternate: words[x].replacement, term:words[x].term }))
                   .setDisabled(false)))
               .setCollapsible(true)
               .setHeader(words[x].term));
@@ -318,11 +312,29 @@ function createWord(problemTerm, wordReplacement, wordReason) {
   return createdWord
 }
 
-//add parameters to replace hardcode with problematic word and alternative word so only have to use 
-function replacement(words){
-  const doc = DocumentApp.getActiveDocument().getBody();
-  Logger.log(words.term);
+// replaces the first occurrence of the given term
+function replacement(e) {    
+  var body = DocumentApp.getActiveDocument().getBody();
+  var found = body.findText(e.parameters.term);
+  if (found) {
+    var start = found.getStartOffset();
+    var end = found.getEndOffsetInclusive();
+    var text = found.getElement().asText();
+    text.deleteText(start, end);
+    text.insertText(start, e.parameters.alternate);
+  }
+}
 
-  const body = doc.setText(doc.getText().toLowerCase());
-  body.replaceText("blacklist", "denylist");
+// hihglights the given word
+//!!!!!!!!!!!!bug if user chooses to highlight two of the same words consecutively!!!!!!!!!
+function highlight(e){
+  var body = DocumentApp.getActiveDocument().getBody();
+  var found = body.findText(e.parameters.term);
+  if (found && !found.getElement().asText().isBold()) {
+    var start = found.getStartOffset();
+    var end = found.getEndOffsetInclusive();
+    var text = found.getElement().asText();
+    // Set Bold
+    text.setBold(start, end,true);
+  }
 }
