@@ -26,7 +26,7 @@ function whenEdit(e){
   var range = e.range;
   var value = range.getValue();
   var valueLowerCase = value.toLowerCase();
-  var problemWords = words.filter(words => words.term == valueLowerCase);
+  var problemWords = words.filter(words => valueLowerCase.includes(words.term));
 
   if (problemWords.length !=0){
     var problemTerm = problemWords[0].term;
@@ -140,7 +140,7 @@ function getDocsSelection(e) {
                      .setText('Click Again to Scan')
                      .setOnClickAction(CardService.newAction().setFunctionName('getDocsSelection'))
                      .setDisabled(false))))
-                     
+
    return docCard.build();
 }
 
