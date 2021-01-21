@@ -187,8 +187,7 @@ function getSheetsSelection(e) {
  * return {CardService.Card} The selected text.
  */
 function getSlidesSelection(e) {
-  function isWordOnAnySlide(wordToMatch, slides) {
-   var wordFound;
+  var wordFound;
    slides.forEach(function(slide){
     if (wordFound) {
       return;
@@ -211,13 +210,10 @@ function getSlidesSelection(e) {
    })
    return wordFound;
 }
-
 function checkWords() {
-  
   var presentation = SlidesApp.getActivePresentation();
   var slides = presentation.getSlides();
-  var result = isWordOnAnySlide("blacklist", slides); 
-  if (result) {
+  if (isWordOnAnySlide("blacklist", slides)) {
     var response = ui.alert('Problematic Word Found','Click YES to replace "blacklist" with "denylist"', 
     ui.ButtonSet.YES_NO);
     if (response == ui.Button.YES){
@@ -238,27 +234,6 @@ function checkWords() {
       presentation.replaceAllText("slave", "follower", false);
     }
   }
-  if(isWordOnAnySlide("multi master", slides)){
-    var response = ui.alert('Problematic Word Found','Click YES to replace "multi master" with "active"', 
-    ui.ButtonSet.YES_NO);
-    if (response == ui.Button.YES){
-      presentation.replaceAllText("multi master", "active", false);
-    }
-  }
-  if(isWordOnAnySlide("single master", slides)){
-    var response = ui.alert('Problematic Word Found','Click YES to replace "single master" with "active"', 
-    ui.ButtonSet.YES_NO);
-    if (response == ui.Button.YES){
-      presentation.replaceAllText("single master", "single active", false);
-    }
-  }
-  if(isWordOnAnySlide("master branch", slides)){
-    var response = ui.alert('Problematic Word Found','Click YES to replace "master branch" with "main"', 
-    ui.ButtonSet.YES_NO);
-    if (response == ui.Button.YES){
-      presentation.replaceAllText("master branch", "main", false);
-    }
-  }
   if(isWordOnAnySlide("master", slides)){
     var response = ui.alert('Problematic Word Found','Click YES to replace "master" with "primary"', 
     ui.ButtonSet.YES_NO);
@@ -266,14 +241,6 @@ function checkWords() {
       presentation.replaceAllText("master", "primary", false);
     }
   }
-  // var masterMatches = valueLowerCase.match(/master/g);
-        // if(masterMatches != null && wordAfterMatch != "branch"){
-        //   var response = ui.alert('Problematic Word Found','Click YES to replace "master" with "primary"', 
-        //   ui.ButtonSet.  YES_NO);
-        //   if (response == ui.Button.YES){
-        //   presentation.replaceAllText("master", "primary", false);
-        //   }
-        // }
   if(isWordOnAnySlide("redliner", slides)){
     var response = ui.alert('Problematic Word Found','Click YES to replace "redliner" with "dyno"', 
     ui.ButtonSet.YES_NO);
@@ -295,7 +262,6 @@ function checkWords() {
   }
 }
 
-}
 //Helper Functions::
 
 
