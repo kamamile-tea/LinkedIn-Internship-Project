@@ -58,12 +58,16 @@ function createSelectionCard(e) {
         .setDisabled(false)))
   } 
    else if (hostApp === 'sheets') {
-     //!!!!!!!!!!!!!!!!!!!!!!Issue with sheet creating new trigger again and again with each  page refresh!!!!!!!!!!!!!!!!!!!!!!!
+    try{
     ScriptApp.newTrigger('whenEdit')
     .forSpreadsheet(SpreadsheetApp.getActive())
     .onEdit()
     .create();
-
+    }
+    catch(err){
+      fromSection.addWidget(CardService.newTextParagraph().setText(
+                  "Succesfully running on Edit feature"))
+    }
     fromSection.addWidget(CardService.newButtonSet()
       .addButton(CardService.newTextButton()
         .setText('Get Selection')
