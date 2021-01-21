@@ -133,6 +133,14 @@ function getDocsSelection(e) {
       }
   }
 
+  docCard.addSection(
+          CardService.newCardSection()
+              .addWidget(CardService.newButtonSet()
+                  .addButton(CardService.newTextButton()
+                     .setText('Click Again to Scan')
+                     .setOnClickAction(CardService.newAction().setFunctionName('getDocsSelection'))
+                     .setDisabled(false))))
+                     
    return docCard.build();
 }
 
