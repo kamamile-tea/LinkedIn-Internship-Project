@@ -11,7 +11,7 @@
   "addOns": {
     "common": {
       "name": "UnInclusive Language",
-      "logoUrl": "https://www.nicepng.com/png/detail/800-8002293_aesthetic-clipart-pastel-sticker-tumblr-pink-png.png",
+      "logoUrl": "https://freeiconshop.com/wp-content/uploads/edd/document-done-flat.png",
       "layoutProperties": {
         "primaryColor": "#2772ed"
       },
@@ -21,7 +21,6 @@
     },
     "docs" : {},
     "slides" : {},
-    "sheets" : {},
-    "drive" : {}
+    "sheets" : {}
   }
 }

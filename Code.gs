@@ -95,6 +95,7 @@ function createSelectionCard(e) {
  * @return {CardService.Card} The selected text.
  */
 function getDocsSelection(e) {
+  //By utilizing copy, makes so we arent changing anything in the actual document so setText is not pointing to the OG document
   var doc = DocumentApp.getActiveDocument().getBody().copy().editAsText();
 
   const body = doc.setText(doc.getText().toLowerCase());
