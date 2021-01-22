@@ -95,8 +95,10 @@ function createSelectionCard(e) {
  * @return {CardService.Card} The selected text.
  */
 function getDocsSelection(e) {
-  var doc = DocumentApp.getActiveDocument().getBody();
+  var doc = DocumentApp.getActiveDocument().getBody().copy().editAsText();
+
   const body = doc.setText(doc.getText().toLowerCase());
+  
   var docCard = CardService.newCardBuilder();
   
   for(x in words){
