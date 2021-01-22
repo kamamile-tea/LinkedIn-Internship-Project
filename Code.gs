@@ -68,11 +68,11 @@ function createSelectionCard(e) {
       fromSection.addWidget(CardService.newTextParagraph().setText(
                   "Succesfully running on Edit feature"))
     }
-    fromSection.addWidget(CardService.newButtonSet()
-      .addButton(CardService.newTextButton()
-        .setText('Get Selection')
-        .setOnClickAction(CardService.newAction().setFunctionName('getSheetsSelection'))
-        .setDisabled(false)))
+    // fromSection.addWidget(CardService.newButtonSet()
+    //   .addButton(CardService.newTextButton()
+    //     .setText('Get Selection')
+    //     .setOnClickAction(CardService.newAction().setFunctionName('getSheetsSelection'))
+    //     .setDisabled(false)))
   } 
   else if (hostApp === 'slides') {
     fromSection.addWidget(CardService.newButtonSet()
@@ -151,47 +151,47 @@ function getDocsSelection(e) {
  * @return {CardService.Card} The selected text.
  */
 function getSheetsSelection(e) {
-  var sheet = SpreadsheetApp.getActiveSheet();
-  var sheetRange = sheet.getDataRange();
-  var sheetValues = sheetRange.getValues();
-  var sheetCard = CardService.newCardBuilder();
+  // var sheet = SpreadsheetApp.getActiveSheet();
+  // var sheetRange = sheet.getDataRange();
+  // var sheetValues = sheetRange.getValues();
+  // var sheetCard = CardService.newCardBuilder();
 
-  var matches = "";
+  // var matches = "";
 
-  for(let row = 0; row < sheetValues.length; row++){
-    for(let col = 0; col < sheetValues[row].length; col++){
-      for(x in words){
-        console.log(words[x].term + "-----");
-        if(sheetValues[row][col].toLowerCase().indexOf(words[x].term) != -1){
-          matches = ('Problematic word: ' 
-          + sheetValues[row][col]
-          + '\nAlternative: ' + words[x].replacement
-          + '\nReason: '+ words[x].reason + '. \n');
+  // for(let row = 0; row < sheetValues.length; row++){
+  //   for(let col = 0; col < sheetValues[row].length; col++){
+  //     for(x in words){
+  //       console.log(words[x].term + "-----");
+  //       if(sheetValues[row][col].toLowerCase().indexOf(words[x].term) != -1){
+  //         matches = ('Problematic word: ' 
+  //         + sheetValues[row][col]
+  //         + '\nAlternative: ' + words[x].replacement
+  //         + '\nReason: '+ words[x].reason + '. \n');
 
-          sheetCard.addSection(
-          CardService.newCardSection()
-              .addWidget(CardService.newTextParagraph().setText(
-                  matches))
-              .addWidget(CardService.newButtonSet()
-                .addButton(CardService.newTextButton()
-                  .setText('Show me where')
-                  .setOnClickAction(CardService.newAction().setFunctionName('functionNameHere'))
-                  .setDisabled(false))
-                .addButton(CardService.newTextButton()
-                  .setText('Replace Word')
-                  .setOnClickAction(CardService.newAction().setFunctionName('functionNameHere'))
-                  .setDisabled(false)))
-              .setCollapsible(true)
-              .setHeader(sheetValues[row][col]));
-        }
+  //         sheetCard.addSection(
+  //         CardService.newCardSection()
+  //             .addWidget(CardService.newTextParagraph().setText(
+  //                 matches))
+  //             .addWidget(CardService.newButtonSet()
+  //               .addButton(CardService.newTextButton()
+  //                 .setText('Show me where')
+  //                 .setOnClickAction(CardService.newAction().setFunctionName('functionNameHere'))
+  //                 .setDisabled(false))
+  //               .addButton(CardService.newTextButton()
+  //                 .setText('Replace Word')
+  //                 .setOnClickAction(CardService.newAction().setFunctionName('functionNameHere'))
+  //                 .setDisabled(false)))
+  //             .setCollapsible(true)
+  //             .setHeader(sheetValues[row][col]));
+  //       }
 
-      }
-    }
-  }
+  //     }
+  //   }
+  // }
   /*
     What if made function that created new widget within given section and it took in passed parameters of something like matches or the objects shock uses and it was called within a loop like the one above.
   */
-    return sheetCard.build();
+  //  return sheetCard.build();
 }
 
 /**
