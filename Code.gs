@@ -78,7 +78,7 @@ function createSelectionCard(e) {
     fromSection.addWidget(CardService.newButtonSet()
       .addButton(CardService.newTextButton()
         .setText('Check Words')
-        .setOnClickAction(CardService.newAction().setFunctionName('getSlidesSelection'))
+        .setOnClickAction(CardService.newAction().setFunctionName('checkWords'))
         .setDisabled(false)))
   }
 
@@ -201,81 +201,84 @@ function getSheetsSelection(e) {
  * Helper function to get the selected text of the active slide.
  * return {CardService.Card} The selected text.
  */
-function getSlidesSelection(e) {
-  var wordFound;
-   slides.forEach(function(slide){
-    if (wordFound) {
-      return;
-    }
-    shapes = slide.getShapes();
-    shapes.forEach(function(shape){
-      var rangeA = shape.getText();
-      var value = rangeA.asString();
-      var valueLowerCase = value.toLowerCase(); 
-      if (valueLowerCase !== null && valueLowerCase.length != 1){
-        var stringToMatch = new RegExp(wordToMatch, 'g');
-        var matches = valueLowerCase.match(stringToMatch);
-        Logger.log("matches if any found: " + matches);
-        if (matches != null){
-          Logger.log("Match found, returning true");
-          wordFound = true;
-        }
+
+  function isWordOnAnySlide(wordToMatch, slides) {
+    var ui = SlidesApp.getUi();
+    var wordFound;
+    slides.forEach(function(slide){
+      if (wordFound) {
+        return;
       }
+      shapes = slide.getShapes();
+      shapes.forEach(function(shape){
+        var rangeA = shape.getText();
+        var value = rangeA.asString();
+        var valueLowerCase = value.toLowerCase(); 
+        if (valueLowerCase !== null && valueLowerCase.length != 1){
+          var stringToMatch = new RegExp(wordToMatch, 'g');
+          var matches = valueLowerCase.match(stringToMatch);
+          Logger.log("matches if any found: " + matches);
+          if (matches != null){
+            Logger.log("Match found, returning true");
+            wordFound = true;
+          }
+        }
+      })
     })
-   })
-   return wordFound;
-}
-function checkWords() {
+    return wordFound;
+  }
+  function checkWords() {
   var presentation = SlidesApp.getActivePresentation();
   var slides = presentation.getSlides();
-  if (isWordOnAnySlide("blacklist", slides)) {
-    var response = ui.alert('Problematic Word Found','Click YES to replace "blacklist" with "denylist"', 
-    ui.ButtonSet.YES_NO);
-    if (response == ui.Button.YES){
-      presentation.replaceAllText("blacklist", "denylist", false);
+    if (isWordOnAnySlide("blacklist", slides)) {
+      var response = ui.alert('Problematic Word Found','Click YES to replace "blacklist" with "denylist"', 
+      ui.ButtonSet.YES_NO);
+      if (response == ui.Button.YES){
+        presentation.replaceAllText("blacklist", "denylist", false);
+      }
+  }
+    if(isWordOnAnySlide("whitelist", slides)){
+      var response = ui.alert('Problematic Word Found','Click YES to replace "whitelist" with "acceptlist"', 
+      ui.ButtonSet.YES_NO);
+      if (response == ui.Button.YES){
+        presentation.replaceAllText("whitelist", "acceptlist", false);
+      }
     }
-}
-  if(isWordOnAnySlide("whitelist", slides)){
-    var response = ui.alert('Problematic Word Found','Click YES to replace "whitelist" with "acceptlist"', 
-    ui.ButtonSet.YES_NO);
-    if (response == ui.Button.YES){
-      presentation.replaceAllText("whitelist", "acceptlist", false);
+    if(isWordOnAnySlide("slave", slides)){
+      var response = ui.alert('Problematic Word Found','Click YES to replace "slave" with "follower"', 
+      ui.ButtonSet.YES_NO);
+      if (response == ui.Button.YES){
+        presentation.replaceAllText("slave", "follower", false);
+      }
+    }
+    if(isWordOnAnySlide("master", slides)){
+      var response = ui.alert('Problematic Word Found','Click YES to replace "master" with "primary"', 
+      ui.ButtonSet.YES_NO);
+      if (response == ui.Button.YES){
+        presentation.replaceAllText("master", "primary", false);
+      }
+    }
+    if(isWordOnAnySlide("redliner", slides)){
+      var response = ui.alert('Problematic Word Found','Click YES to replace "redliner" with "dyno"', 
+      ui.ButtonSet.YES_NO);
+      if (response == ui.Button.YES){
+        presentation.replaceAllText("redliner", "dyno", false);
+      }
+    }
+    if(isWordOnAnySlide("ghetto", slides)){
+      var response = ui.alert('Problematic Word Found','Click YES to replace "ghetto" with "low-quality"', ui.ButtonSet.YES_NO);
+      if (response == ui.Button.YES){
+        presentation.replaceAllText("ghetto", "low-quality", false);
+      }
+    }
+    if(isWordOnAnySlide("grandfathering", slides)){
+      var response = ui.alert('Problematic Word Found','Click YES to replace "grandfathering" with "legacy"', ui.ButtonSet.YES_NO);
+      if (response == ui.Button.YES){
+        presentation.replaceAllText("grandfathering", "legacy", false);
+      }
     }
   }
-  if(isWordOnAnySlide("slave", slides)){
-    var response = ui.alert('Problematic Word Found','Click YES to replace "slave" with "follower"', 
-    ui.ButtonSet.YES_NO);
-    if (response == ui.Button.YES){
-      presentation.replaceAllText("slave", "follower", false);
-    }
-  }
-  if(isWordOnAnySlide("master", slides)){
-    var response = ui.alert('Problematic Word Found','Click YES to replace "master" with "primary"', 
-    ui.ButtonSet.YES_NO);
-    if (response == ui.Button.YES){
-      presentation.replaceAllText("master", "primary", false);
-    }
-  }
-  if(isWordOnAnySlide("redliner", slides)){
-    var response = ui.alert('Problematic Word Found','Click YES to replace "redliner" with "dyno"', 
-    ui.ButtonSet.YES_NO);
-    if (response == ui.Button.YES){
-      presentation.replaceAllText("redliner", "dyno", false);
-    }
-  }
-  if(isWordOnAnySlide("ghetto", slides)){
-    var response = ui.alert('Problematic Word Found','Click YES to replace "ghetto" with "low-quality"', ui.ButtonSet.YES_NO);
-    if (response == ui.Button.YES){
-      presentation.replaceAllText("ghetto", "low-quality", false);
-    }
-  }
-  if(isWordOnAnySlide("grandfathering", slides)){
-    var response = ui.alert('Problematic Word Found','Click YES to replace "grandfathering" with "legacy"', ui.ButtonSet.YES_NO);
-    if (response == ui.Button.YES){
-      presentation.replaceAllText("grandfathering", "legacy", false);
-    }
-  }
-}
+
 
 //Helper Functions::
 
@@ -292,27 +295,39 @@ function createWord(problemTerm, wordReplacement, wordReason) {
 
 // replaces the first occurrence of the given term
 function replacement(e) {    
-  var body = DocumentApp.getActiveDocument().getBody();
-  var found = body.findText(e.parameters.term);
+  var ogBody = DocumentApp.getActiveDocument().getBody();
+
+  var doc = DocumentApp.getActiveDocument().getBody().copy().editAsText();
+  const body = doc.setText(doc.getText().toLowerCase()).editAsText();
+
+  var found = body.getText().includes(e.parameters.term);
+
   if (found) {
-    var start = found.getStartOffset();
-    var end = found.getEndOffsetInclusive();
-    var text = found.getElement().asText();
+    var start = body.getText().indexOf(e.parameters.term);
+    var end = start + e.parameters.term.length;
+    var text = ogBody.editAsText();
     text.deleteText(start, end);
-    text.insertText(start, e.parameters.alternate);
+    text.insertText(start, e.parameters.alternate+" ");
   }
 }
 
 // hihglights the given word
 //!!!!!!!!!!!!bug if user chooses to highlight two of the same words consecutively!!!!!!!!!
 function highlight(e){
-  var body = DocumentApp.getActiveDocument().getBody();
-  var found = body.findText(e.parameters.term);
-  if (found && !found.getElement().asText().isBold()) {
-    var start = found.getStartOffset();
-    var end = found.getEndOffsetInclusive();
-    var text = found.getElement().asText();
+  var doc = DocumentApp.getActiveDocument().getBody().copy().editAsText();
+  const body = doc.setText(doc.getText().toLowerCase()).editAsText();
+
+  var ogBody = DocumentApp.getActiveDocument().getBody();
+
+  var found = body.getText().includes(e.parameters.term);
+  var found2 = body.findText(e.parameters.term);
+
+  if (found && !found2.getElement().asText().isBold()) {
+    var start = body.getText().indexOf(e.parameters.term);
+    var end = start + e.parameters.term.length;
+    var text = ogBody.editAsText();
     // Set Bold
     text.setBold(start, end,true);
   }
+
 }
